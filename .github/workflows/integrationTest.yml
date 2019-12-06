@@ -14,3 +14,10 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./FrontEnd/Sailfish-EndToEndTest/gradlew -b ./FrontEnd/Sailfish-EndToEndTest/build.gradle clean iT
+    - name: Google Chat Notification
+      uses: Co-qn/google-chat-notification@releases/v1
+      with:
+        name: Build
+        url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+        status: ${{ job.status }}
+      if: always()
