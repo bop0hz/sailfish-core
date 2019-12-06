@@ -1,15 +1,10 @@
 name: Integration test
 
-name: Java CI
-
 on: [push]
 
 jobs:
   build:
-    strategy:
-      matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.platform }}
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
