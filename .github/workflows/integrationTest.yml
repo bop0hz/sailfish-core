@@ -14,6 +14,11 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./FrontEnd/Sailfish-EndToEndTest/gradlew -b ./FrontEnd/Sailfish-EndToEndTest/build.gradle clean iT
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: report
+        path: ./FrontEnd/Sailfish-EndToEndTest/build/test-results/
     - name: Google Chat Notification
       uses: Co-qn/google-chat-notification@releases/v1
       with:
