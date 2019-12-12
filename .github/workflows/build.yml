@@ -25,7 +25,7 @@ jobs:
       with:
         name: ${{ matrix.platform }}-logs
         path: ./BackEnd/Core/sailfish-core/build/test-results/
-      if: failed()
+      if: failure()
 
     - name: Google Chat Notification
       uses: Co-qn/google-chat-notification@releases/v1
