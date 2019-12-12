@@ -1,0 +1,13 @@
+---
+testAMLSyntaxNegative:
+  fixServerPort: '9980'
+testAMLSyntaxPositive:
+  fixServerPort: '9981'
+TestMatrixNegative:
+  fixServerPort: '9982'
+testMatrixPositive:
+  fixServerPort: '9983'
+testServiceNegative:
+  fixServerPort: '9984'
+testServicePositive:
+  fixServerPort: '9985'

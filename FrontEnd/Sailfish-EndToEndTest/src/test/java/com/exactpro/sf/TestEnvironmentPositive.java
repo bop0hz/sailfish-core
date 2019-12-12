@@ -30,8 +30,8 @@ public class TestEnvironmentPositive extends AbstractSFTest {
 
     private SFAPIClient sfapi;
 
-    private String firstEnvironment = "firstEnvironment";
-    private String secondEnvironment = "secondEnvironment";
+    private String firstEnvironment = "firstEnvironmentPositive";
+    private String secondEnvironment = "secondEnvironmentPositive";
 
     private static final Logger logger = LoggerFactory.getLogger(TestEnvironmentPositive.class);
 

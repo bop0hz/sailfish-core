@@ -56,6 +56,7 @@ public class TestAMLSyntaxNegative extends TestMatrix {
     private final static String DUBLICATED_COLUMN_MATRIX = "testDublicatedColumn.csv";
     private final static String DEFINED_HEADER_MATRIX = "testIncorrectDefineHeader.csv";
     private final static String INVALID_FIELDORDER = "testInvalidFieldOrder.csv";
+    private static final String ENVIRONMENT = "testAMLSyntaxNegative";
 
     private static List<String> errorsTestsMatrix;
     private static List<String> errorsDoubleStart;
@@ -85,7 +86,11 @@ public class TestAMLSyntaxNegative extends TestMatrix {
     public static void setUpClass() throws Exception {
         logger.info("Start negative tests of AML syntax");
         try {
+            TestMatrix.ENVIRONMENT = ENVIRONMENT;
             sfapi = new SFAPIClient(TestMatrix.SF_GUI_URL);
+            sfapi.importVariableSets("envs.yml", TestServicePositive.class.getClassLoader().getResourceAsStream("envs.yml"), false);
+            sfapi.createEnvironment(ENVIRONMENT);
+            sfapi.setEnvironmentVariableSet(ENVIRONMENT, ENVIRONMENT);
             init(sfapi);
 
             errorsTestsMatrix = getList(sfapi.getTestScriptRunInfo(runMatrix(sfapi, TESTS_MATRIX, INVALID_TEST_PATH)).getProblem().trim());

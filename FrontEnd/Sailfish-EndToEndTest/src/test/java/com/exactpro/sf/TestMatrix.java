@@ -69,7 +69,7 @@ public class TestMatrix extends AbstractSFTest {
     public static final String SCRIPT_STATUS_CANCELED = SCRIPT_STATE_CANCELED;
     public static final String SCRIPT_STATUS_EXECUTED = "EXECUTED";
     public static final String SCRIPT_STATUS_INIT_FAILED = "INIT_FAILED";
-    private final static String ENVIRONMENT = "default";
+    public static String ENVIRONMENT = UUID.randomUUID().toString();
     private static List<ServiceImportResult> importedServices = null;
     private static List<Integer> matricesIds = new ArrayList<>();
     private static List<Integer> runs = new ArrayList<>();
@@ -87,7 +87,7 @@ public class TestMatrix extends AbstractSFTest {
 
     /**
      * Run quickfix.Executor, upload FIX Client and start FIX Client.
-     * 
+     *
      * @param sfapi
      * @throws Exception
      */
@@ -109,7 +109,7 @@ public class TestMatrix extends AbstractSFTest {
 
     /**
      * Delete uploaded service, matrices and TestScriptRuns. Close SFAPIClient.
-     * 
+     *
      * @param sfapi
      * @throws Exception
      */
@@ -185,7 +185,7 @@ public class TestMatrix extends AbstractSFTest {
 
     /**
      * Test valid or invalid TestScriptRunDescription after matrix run
-     * 
+     *
      * @param valid
      * @param sfapi
      * @param testScriptId
@@ -250,7 +250,7 @@ public class TestMatrix extends AbstractSFTest {
 
     /**
      * Test valid or invalid report of matrices run from input stream
-     * 
+     *
      * @param stream
      * @param valid
      * @throws APICallException
@@ -285,7 +285,7 @@ public class TestMatrix extends AbstractSFTest {
 
     /**
      * Waiting from matrix stop and test that it's stop correctly
-     * 
+     *
      * @param sfapi
      * @param testScriptId
      * @throws APICallException
@@ -421,7 +421,7 @@ public class TestMatrix extends AbstractSFTest {
         int testsMatrixID = (int) sfapi.uploadMatrix(TestMatrixPositive.class.getClassLoader().getResourceAsStream(path + matrixName), matrixName)
                 .getId();
         int testsScriptID = (int) sfapi
-                .performMatrixAction(testsMatrixID, "start", null, "default", "ISO-8859-1", 3, false, false, true, true, null, null, null).getId();
+                .performMatrixAction(testsMatrixID, "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, null, null, null).getId();
         addRun(testsScriptID);
         addMatrix(testsMatrixID);
         long time = System.currentTimeMillis() + 60000;

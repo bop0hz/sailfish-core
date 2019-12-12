@@ -46,7 +46,7 @@ public class TestMatrixPositive extends TestMatrix {
     private final static String matrixFileRange = "testMatrixRange.csv";
     private final static String matrixFileWithVariableDelay = "testMatrixTimeDelay.csv";
     private final static String matrixFileRangeForExcludeCase = "testMatrixRangeForExcludeCase.csv";
-    private final String ENVIRONMENT = "testEnvironment";
+    private final static String ENVIRONMENT = "testMatrixPositive";
     private static final String matrixFileWithPath = System.getProperty("matrixPath") == null
         ? TestMatrixPositive.class.getClassLoader().getResource(matrixFile).getFile()
         : Paths.get(System.getProperty("matrixPath"), matrixFile).toString(); // for containerized environment
@@ -63,6 +63,9 @@ public class TestMatrixPositive extends TestMatrix {
         logger.info("Start positive tests of matricies");
         try {
             sfapi = new SFAPIClient(TestMatrix.SF_GUI_URL);
+            sfapi.createEnvironment(ENVIRONMENT);
+            sfapi.importVariableSets("envs.yml", TestServicePositive.class.getClassLoader().getResourceAsStream("envs.yml"), false);
+            sfapi.setEnvironmentVariableSet(ENVIRONMENT, ENVIRONMENT);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw e;
@@ -90,9 +93,9 @@ public class TestMatrixPositive extends TestMatrix {
                 sfapi.deleteMatrix(matrixWithRanges);
             }
 
-            for (int id : runs) {
-                sfapi.deleteTestScriptRun(id);
-            }
+            // for (int id : runs) {
+            //     sfapi.deleteTestScriptRun(id);
+            // }
             sfapi.close();
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -247,14 +250,14 @@ public class TestMatrixPositive extends TestMatrix {
                 int testScriptId;
                 // Its unknown in what form will be the space in URL
                 try {
-                    testScriptId = (int) sfapi.performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, false, false, true,
+                    testScriptId = (int) sfapi.performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true,
                             true, null, null, null, "aml_3:AML_v3").getId();
                 } catch (APIResponseException resp) {
                     try {
-                        testScriptId = (int) sfapi.performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, false, false, true,
+                        testScriptId = (int) sfapi.performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true,
                                 true, null, null, null, "aml_3:AML%20v3").getId();
                     } catch (APIResponseException e) {
-                        testScriptId = (int) sfapi.performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, false, false, true,
+                        testScriptId = (int) sfapi.performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true,
                                 true, null, null, null, "AML_v3").getId();
                     }
                 }
@@ -286,7 +289,7 @@ public class TestMatrixPositive extends TestMatrix {
             }
             if (matrix != null) {
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, false, false, true, true, null, null, null)
+                        .performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, null, null, null)
                         .getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(true, sfapi, testScriptId);
@@ -315,7 +318,7 @@ public class TestMatrixPositive extends TestMatrix {
             }
             if (matrix != null) {
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getName(), "start", null, "default", "ISO-8859-1", 3, false, false, true, true, null, null, null)
+                        .performMatrixAction(matrix.getName(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, null, null, null)
                         .getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(true, sfapi, testScriptId);
@@ -343,15 +346,12 @@ public class TestMatrixPositive extends TestMatrix {
                 matrix = getMatrixFromList(matrixList, matrixId, matrixFile);
             }
             if (matrix != null) {
-                try (AutoCloseable deleteEnv = () -> sfapi.deleteEnvironment(ENVIRONMENT)) {
-                    sfapi.createEnvironment(ENVIRONMENT);
-                    int testScriptId = (int) sfapi
-                            .performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, null, null,
-                                    null).getId();
+                int testScriptId = (int) sfapi
+                        .performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, null, null,
+                                null).getId();
 
-                    runs.add(testScriptId);
-                    testScriptRunDescription(true, sfapi, testScriptId);
-                }
+                runs.add(testScriptId);
+                testScriptRunDescription(true, sfapi, testScriptId);
             } else
                 Assert.fail("Matrix " + matrixFile + " hasn't been uploaded");
         } catch (Exception e) {
@@ -376,7 +376,7 @@ public class TestMatrixPositive extends TestMatrix {
                 matrixWithRanges = getMatrixFromList(matrixList, matrixId, matrixFileRange);
             }
             if (matrixWithRanges != null) {
-                int testScriptId = (int)sfapi.performMatrixAction(matrixWithRanges.getId(), "start", "2", "default", "ISO-8859-1", 3, false, false,
+                int testScriptId = (int)sfapi.performMatrixAction(matrixWithRanges.getId(), "start", "2", ENVIRONMENT, "ISO-8859-1", 3, false, false,
                         true, true, null, null, null).getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(true, sfapi, testScriptId);
@@ -405,7 +405,7 @@ public class TestMatrixPositive extends TestMatrix {
                 List<String> tags = new ArrayList<String>();
                 tags.add("testTag");
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, false, false, true, true, tags, null, null)
+                        .performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, tags, null, null)
                         .getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(true, sfapi, testScriptId);
@@ -434,7 +434,7 @@ public class TestMatrixPositive extends TestMatrix {
             }
             if (matrix != null) {
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, false, false, true, true, null, null, null)
+                        .performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, null, null, null)
                         .getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(true, sfapi, testScriptId);
@@ -463,7 +463,7 @@ public class TestMatrixPositive extends TestMatrix {
             }
             if (matrix != null) {
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getId(), "start", null, "default", "UTF-8", 3, false, false, true, true, null, null, null)
+                        .performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "UTF-8", 3, false, false, true, true, null, null, null)
                         .getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(true, sfapi, testScriptId);
@@ -492,7 +492,7 @@ public class TestMatrixPositive extends TestMatrix {
             }
             if (matrix != null) {
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, true, false, true, true, null, null, null)
+                        .performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, true, false, true, true, null, null, null)
                         .getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(true, sfapi, testScriptId);
@@ -521,7 +521,7 @@ public class TestMatrixPositive extends TestMatrix {
             }
             if (matrix != null) {
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, false, true, true, true, null, null, null)
+                        .performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, true, true, true, null, null, null)
                         .getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(true, sfapi, testScriptId);
@@ -550,7 +550,7 @@ public class TestMatrixPositive extends TestMatrix {
             }
             if (matrix != null) {
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, false, false, true, false, null, null, null)
+                        .performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, false, null, null, null)
                         .getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(true, sfapi, testScriptId);
@@ -579,7 +579,7 @@ public class TestMatrixPositive extends TestMatrix {
             }
             if (matrix != null) {
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, false, false, false, true, null, null, null)
+                        .performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, false, true, null, null, null)
                         .getId();
 
                 XmlTestscriptRunDescription xmlDescription = sfapi.getTestScriptRunInfo(testScriptId);
@@ -623,7 +623,7 @@ public class TestMatrixPositive extends TestMatrix {
                 matrixVariableDelay = getMatrixFromList(matrixList, matrixId, matrixFileWithVariableDelay);
             }
             if (matrixVariableDelay != null) {
-                int testScriptId = (int)sfapi.performMatrixAction(matrixVariableDelay.getId(), "start", null, "default", "ISO-8859-1", 3, false,
+                int testScriptId = (int)sfapi.performMatrixAction(matrixVariableDelay.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false,
                         false, true, true, null, "%22s1%22:%22500%22", null).getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(true, sfapi, testScriptId);
@@ -732,7 +732,7 @@ public class TestMatrixPositive extends TestMatrix {
                 matrix = getMatrixFromList(matrixList, matrixId, matrixFile);
             }
             if (matrix != null) {
-                int testScriptId = (int)sfapi.performMatrixAction(matrix.getName(), "start", null, "default", "ISO-8859-1", 3, false, false, true,
+                int testScriptId = (int)sfapi.performMatrixAction(matrix.getName(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true,
                         true, null, null, "testSubfolder").getId();
                 runs.add(testScriptId);
                 XmlTestscriptRunDescription description = sfapi.getTestScriptRunInfo(testScriptId);
@@ -901,40 +901,37 @@ public class TestMatrixPositive extends TestMatrix {
     public void testRangeForExcludedTestCase() throws Exception {
         logger.info("Start testRangeForExcludedTestCase()");
         try {
-            sfapi.createEnvironment(ENVIRONMENT);
-            try (AutoCloseable deleteEnv = () -> sfapi.deleteEnvironment(ENVIRONMENT)) {
 
-                startService(sfapi, SERVER, SERVER_NAME, ENVIRONMENT);
-                try (AutoCloseable deleteServer = () -> sfapi.deleteService(ENVIRONMENT, SERVER_NAME)) {
+            startService(sfapi, SERVER, SERVER_NAME, ENVIRONMENT);
+            try (AutoCloseable deleteServer = () -> sfapi.deleteService(ENVIRONMENT, SERVER_NAME)) {
 
-                    startService(sfapi, CLIENT, CLIENT_NAME, ENVIRONMENT);
-                    try (AutoCloseable deleteClient = () -> sfapi.deleteService(ENVIRONMENT, CLIENT_NAME)) {
+                startService(sfapi, CLIENT, CLIENT_NAME, ENVIRONMENT);
+                try (AutoCloseable deleteClient = () -> sfapi.deleteService(ENVIRONMENT, CLIENT_NAME)) {
 
-                        int matrixId = (int) sfapi.uploadMatrix(getClass().getClassLoader().getResourceAsStream(matrixFileRangeForExcludeCase), matrixFileRangeForExcludeCase)
-                                .getId();
-                        Matrix matrixRangeForExcludeCase = getMatrixFromList(sfapi.getMatrixList(), matrixId, matrixFileRangeForExcludeCase);
-                        if (matrixRangeForExcludeCase != null) {
-                            try (AutoCloseable deletMatrix = () -> sfapi.deleteMatrix(matrixRangeForExcludeCase)) {
+                    int matrixId = (int) sfapi.uploadMatrix(getClass().getClassLoader().getResourceAsStream(matrixFileRangeForExcludeCase), matrixFileRangeForExcludeCase)
+                            .getId();
+                    Matrix matrixRangeForExcludeCase = getMatrixFromList(sfapi.getMatrixList(), matrixId, matrixFileRangeForExcludeCase);
+                    if (matrixRangeForExcludeCase != null) {
+                        try (AutoCloseable deletMatrix = () -> sfapi.deleteMatrix(matrixRangeForExcludeCase)) {
 
-                                int testScriptId = (int) sfapi
-                                        .performMatrixAction(matrixRangeForExcludeCase, "start", "1,2", ENVIRONMENT, "UTF-8",
-                                                3, false, false, true, true, null, null, null)
-                                        .getId();
-                                runs.add(testScriptId);
-                                int timewait = 0;
-                                while (timewait != 600 && sfapi.getTestScriptRunInfo(testScriptId).isLocked()) {
-                                    timewait++;
-                                    Thread.sleep(100);
-                                }
-                                XmlTestscriptRunDescription description = sfapi.getTestScriptRunInfo(testScriptId);
-                                Assert.assertEquals("Unexpected testcase count", 1, description.getTestcases().size());
-                                XmlTestCaseDescription testcase = description.getTestcases().get(0);
-                                Assert.assertEquals("Unexpected testcase description", "First", testcase.getDescription());
-                                Assert.assertEquals("Unexpected testcase id", "1", testcase.getId());
+                            int testScriptId = (int) sfapi
+                                    .performMatrixAction(matrixRangeForExcludeCase, "start", "1,2", ENVIRONMENT, "UTF-8",
+                                            3, false, false, true, true, null, null, null)
+                                    .getId();
+                            runs.add(testScriptId);
+                            int timewait = 0;
+                            while (timewait != 600 && sfapi.getTestScriptRunInfo(testScriptId).isLocked()) {
+                                timewait++;
+                                Thread.sleep(100);
                             }
-                        } else {
-                            Assert.fail("Matrix " + matrixFileRangeForExcludeCase + " hasn't been uploaded");
+                            XmlTestscriptRunDescription description = sfapi.getTestScriptRunInfo(testScriptId);
+                            Assert.assertEquals("Unexpected testcase count", 1, description.getTestcases().size());
+                            XmlTestCaseDescription testcase = description.getTestcases().get(0);
+                            Assert.assertEquals("Unexpected testcase description", "First", testcase.getDescription());
+                            Assert.assertEquals("Unexpected testcase id", "1", testcase.getId());
                         }
+                    } else {
+                        Assert.fail("Matrix " + matrixFileRangeForExcludeCase + " hasn't been uploaded");
                     }
                 }
             }

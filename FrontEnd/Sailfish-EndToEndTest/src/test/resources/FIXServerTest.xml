@@ -42,4 +42,10 @@
         <targetCompID>BANZAI</targetCompID>
         <useDataDictionary>true</useDataDictionary>
     </fixServerSettings>
+    <variables>
+        <entry>
+            <key>socketAcceptPort</key>
+            <value>fixServerPort</value>
+        </entry>
+    </variables>
 </serviceDescription>

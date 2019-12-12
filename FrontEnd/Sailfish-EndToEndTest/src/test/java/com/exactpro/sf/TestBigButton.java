@@ -82,6 +82,7 @@ public class TestBigButton {
             testLibraryMap.put("TestSuite1/csv/validTest.csv", "aml3positive/validTest.csv");
             testLibraryMap.put("TestSuite1/services/env/fake.xml", "fake.xml");
             testLibraryMap.put("TestSuite1/services/env/FIXServerTest.xml", "FIXServerTest.xml");
+            testLibraryMap.put("bb.yml", "bb.yml");
 
             for (Map.Entry<String, String> entry : testLibraryMap.entrySet()) {
                 String k = entry.getKey();

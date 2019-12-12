@@ -34,7 +34,7 @@ import com.exactpro.sf.exceptions.APIResponseException;
 public class TestServiceNegative extends AbstractSFTest {
 
     private static SFAPIClient sfapi;
-    private static String environment = "testEnvironment";
+    private static String environment = "testServiceNegative";
     private static String serviceName = "testService";
     private String serviceFile = CLIENT;
     private static final Logger logger = LoggerFactory.getLogger(TestServiceNegative.class);
@@ -44,6 +44,9 @@ public class TestServiceNegative extends AbstractSFTest {
         logger.info("Start negative tests of services");
         try {
             sfapi = new SFAPIClient(SF_GUI_URL);
+            sfapi.importVariableSets("envs.yml", TestServicePositive.class.getClassLoader().getResourceAsStream("envs.yml"), false);
+            sfapi.createEnvironment(environment);
+            sfapi.setEnvironmentVariableSet(environment, environment);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             Assert.fail(e.getMessage());
@@ -73,6 +76,7 @@ public class TestServiceNegative extends AbstractSFTest {
     public void setUp() throws Exception {
         if (sfapi.getEnvironmentList().contains(environment))
             sfapi.deleteEnvironment(environment);
+        sfapi.createEnvironment(environment);
     }
 
     /**
@@ -82,7 +86,6 @@ public class TestServiceNegative extends AbstractSFTest {
     public void testImportServiceWithIncorrectName() throws Exception {
         logger.info("Start testImportServiceWithIncorrectName()");
         try {
-            sfapi.createEnvironment(environment);
             byte[] content = getByteContent(serviceFile);
 
             InputStream inputStream = new ByteArrayInputStream(content);
@@ -112,7 +115,6 @@ public class TestServiceNegative extends AbstractSFTest {
     public void testImportServiceWithIncorrectStream() throws Exception {
         logger.info("Start testImportServiceWithIncorrectStream()");
         try {
-            sfapi.createEnvironment(environment);
             List<ServiceImportResult> importedServices = null;
             try {
                 importedServices = sfapi.importServices(serviceFile, environment, null, false, false);
@@ -135,9 +137,6 @@ public class TestServiceNegative extends AbstractSFTest {
     public void testStartIncorrectService() throws Exception {
         logger.info("Start testStartIncorrectService()");
         try {
-            List<String> environments = sfapi.getEnvironmentList();
-            if (!environments.contains(environment))
-                sfapi.createEnvironment(environment);
             try {
                 sfapi.startService(environment, "noService");
                 Assert.fail("Service noService can't be started, but it has been started");
@@ -158,9 +157,6 @@ public class TestServiceNegative extends AbstractSFTest {
     public void testDeleteIncorrectService() throws Exception {
         logger.info("Start testDeleteIncorrectService()");
         try {
-            List<String> environments = sfapi.getEnvironmentList();
-            if (!environments.contains(environment))
-                sfapi.createEnvironment(environment);
             try {
                 sfapi.deleteService(environment, "noService");
                 Assert.fail("Service noService can't be deleted, but it has been deleted");
@@ -181,9 +177,6 @@ public class TestServiceNegative extends AbstractSFTest {
     public void testDeleteIncorrectServiceWithArgs() throws Exception {
         logger.info("Start testDeleteIncorrectServiceWithArgs()");
         try {
-            List<String> environments = sfapi.getEnvironmentList();
-            if (!environments.contains(environment))
-                sfapi.createEnvironment(environment);
             try {
                 sfapi.deleteService("environment=" + environment + "&service=" + "noService" + "&deleteOnDisk=false"
                         + "&replaceexisting=false&skipexisting=false");

@@ -33,6 +33,7 @@ public class TestAMLSyntaxPositive extends TestMatrix {
     private final static String VALID_TEST_PATH = "aml3positive" + File.separator;
     private final static String VALID_TEST_MATRIX = "validTest.csv";
     private final static String SENDDIRTY_TEST_MATRIX = "testSendDirty.csv";
+    private static final String ENVIRONMENT = "testAMLSyntaxPositive";
     private static int testScriptID;
     private static int testScriptSendDirtyID;
     private static final Logger logger = LoggerFactory.getLogger(TestAMLSyntaxPositive.class);
@@ -41,7 +42,11 @@ public class TestAMLSyntaxPositive extends TestMatrix {
     public static void setUpClass() throws Exception {
         logger.info("Start positive tests of AML syntax");
         try {
+            TestMatrix.ENVIRONMENT = ENVIRONMENT;
             sfapi = new SFAPIClient(TestMatrix.SF_GUI_URL);
+            sfapi.importVariableSets("envs.yml", TestServicePositive.class.getClassLoader().getResourceAsStream("envs.yml"), false);
+            sfapi.createEnvironment(ENVIRONMENT);
+            sfapi.setEnvironmentVariableSet(ENVIRONMENT, ENVIRONMENT);
             init(sfapi);
             testScriptID = runMatrix(sfapi, VALID_TEST_MATRIX, VALID_TEST_PATH);
 

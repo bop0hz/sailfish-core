@@ -39,6 +39,7 @@ public class TestMatrixNegative extends TestMatrix {
     private static final String noMatrix = "noMatrix.csv";
     private static final String matrixFileNegative = "testMatrixNegative.csv";
     private static final String matrixFile = "testMatrix.csv";
+    private static final String ENVIRONMENT = "testMatrixNegative";
     private static List<String> matricesNames;
     private static Matrix matrix;
     private static List<Integer> runs = new ArrayList<Integer>();
@@ -49,6 +50,9 @@ public class TestMatrixNegative extends TestMatrix {
         logger.info("Start negative tests of matrices");
         try {
             sfapi = new SFAPIClient(TestMatrix.SF_GUI_URL);
+            sfapi.importVariableSets("envs.yml", TestServicePositive.class.getClassLoader().getResourceAsStream("envs.yml"), false);
+            sfapi.createEnvironment(ENVIRONMENT);
+            sfapi.setEnvironmentVariableSet(ENVIRONMENT, ENVIRONMENT);
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw e;
@@ -67,8 +71,8 @@ public class TestMatrixNegative extends TestMatrix {
                 sfapi.deleteMatrix(matrix);
                 matrix = null;
             }
-            for (int id : runs)
-                sfapi.deleteTestScriptRun(id);
+            // for (int id : runs)
+            //     sfapi.deleteTestScriptRun(id);
             sfapi.close();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -202,7 +206,7 @@ public class TestMatrixNegative extends TestMatrix {
             }
             if (matrix != null) {
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, false, false, true, true, null, null, null)
+                        .performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, null, null, null)
                         .getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(false, sfapi, testScriptId);
@@ -231,7 +235,7 @@ public class TestMatrixNegative extends TestMatrix {
             }
             if (matrix != null) {
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getName(), "start", null, "default", "ISO-8859-1", 3, false, false, true, true, null, null, null)
+                        .performMatrixAction(matrix.getName(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, null, null, null)
                         .getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(false, sfapi, testScriptId);
@@ -253,7 +257,7 @@ public class TestMatrixNegative extends TestMatrix {
             int testScriptId = -1;
             try {
                 testScriptId = (int) sfapi
-                        .performMatrixAction(-1, "start", null, "default", "ISO-8859-1", 3, false, false, true, true, null, null, null).getId();
+                        .performMatrixAction(-1, "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, null, null, null).getId();
                 Assert.fail("There is no matrix with id=-1, but running has been done.");
             } catch (APIResponseException e) {
                 checkErrorMessage(e, "Matrix with id = [-1] not found;");
@@ -276,7 +280,7 @@ public class TestMatrixNegative extends TestMatrix {
             int testScriptId = -1;
             try {
                 testScriptId = (int) sfapi
-                        .performMatrixAction("-1", "start", null, "default", "ISO-8859-1", 3, false, false, true, true, null, null, null).getId();
+                        .performMatrixAction("-1", "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, null, null, null).getId();
                 Assert.fail("There is no matrix with name \"-1\", but running has been done.");
             } catch (APIResponseException e) {
                 checkErrorMessage(e, "Cannot find matrix -1;");
@@ -305,7 +309,7 @@ public class TestMatrixNegative extends TestMatrix {
             }
             if (matrix != null) {
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getName(), "start", "3", "default", "ISO-8859-1", 3, false, false, true, true, null, null, null)
+                        .performMatrixAction(matrix.getName(), "start", "3", ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, null, null, null)
                         .getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(false, sfapi, testScriptId);
@@ -334,7 +338,7 @@ public class TestMatrixNegative extends TestMatrix {
             }
             if (matrix != null) {
                 try {
-                    sfapi.performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, false, false, true, true, null, null, null,
+                    sfapi.performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, true, true, null, null, null,
                             "-41").getId();
                     Assert.fail("Try to start matrix with language parameters = \"-41\", but exception wasn't thrown");
                 } catch (APIResponseException e) {
@@ -365,7 +369,7 @@ public class TestMatrixNegative extends TestMatrix {
             }
             if (matrix != null) {
                 try {
-                    sfapi.performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", -41, false, false, true, true, null, null, null,
+                    sfapi.performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", -41, false, false, true, true, null, null, null,
                             "").getId();
                     Assert.fail("Try to start matrix with language parameters = \"-41\", but exception wasn't thrown");
                 } catch (APIResponseException e) {
@@ -395,7 +399,7 @@ public class TestMatrixNegative extends TestMatrix {
                 matrix = getMatrixFromList(matrixList, matrixId, matrixFileNegative);
             }
             if (matrix != null) {
-                int testScriptId = (int)sfapi.performMatrixAction(matrix.getId(), "start", null, "default", "incorrectEncoding", 3, false, false,
+                int testScriptId = (int)sfapi.performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "incorrectEncoding", 3, false, false,
                         true, true, null, null, null).getId();
                 runs.add(testScriptId);
                 testScriptRunDescription(false, sfapi, testScriptId);
@@ -424,7 +428,7 @@ public class TestMatrixNegative extends TestMatrix {
             }
             if (matrix != null) {
                 int testScriptId = (int) sfapi
-                        .performMatrixAction(matrix.getId(), "start", null, "default", "ISO-8859-1", 3, false, false, false, true, null, null, null)
+                        .performMatrixAction(matrix.getId(), "start", null, ENVIRONMENT, "ISO-8859-1", 3, false, false, false, true, null, null, null)
                         .getId();
 
                 XmlTestscriptRunDescription xmlDescription = sfapi.getTestScriptRunInfo(testScriptId);
