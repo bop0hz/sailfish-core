@@ -34,7 +34,7 @@ import com.exactpro.sf.Service.Status;
 public class TestServicePositive extends AbstractSFTest {
 
     private static SFAPIClient sfapi;
-    private static String environment = "testEnvironment1d";
+    private static String environment = "testServicePositive";
     private static String serviceName = CLIENT_NAME;
     private static String serviceFile = CLIENT;
     private static String service = "equalNames.xml";
@@ -54,6 +54,8 @@ public class TestServicePositive extends AbstractSFTest {
             if (!environments.contains(environment)) {
                 sfapi.createEnvironment(environment);
             }
+            sfapi.importVariableSets("envs.yml", TestServicePositive.class.getClassLoader().getResourceAsStream("envs.yml"), false);
+            sfapi.setEnvironmentVariableSet(environment, environment);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw e;
@@ -110,10 +112,6 @@ public class TestServicePositive extends AbstractSFTest {
     public void testStartService() throws Exception {
         logger.info("Start testStartService()");
         try {
-            List<String> environments = sfapi.getEnvironmentList();
-            if (!environments.contains(environment)) {
-                sfapi.createEnvironment(environment);
-            }
             startServer(sfapi, environment);
             Map<String, Service> services = sfapi.getServices(environment);
             boolean imported = false;
@@ -147,10 +145,6 @@ public class TestServicePositive extends AbstractSFTest {
     public void testStopService() throws Exception {
         logger.info("Start testStopService()");
         try {
-            List<String> environments = sfapi.getEnvironmentList();
-            if (!environments.contains(environment)) {
-                sfapi.createEnvironment(environment);
-            }
             startServer(sfapi, environment);
             Map<String, Service> services = sfapi.getServices(environment);
             boolean imported = false;
@@ -187,9 +181,6 @@ public class TestServicePositive extends AbstractSFTest {
     public void testDeleteService() throws Exception {
         logger.info("Start testDeleteService()");
         try {
-            List<String> environments = sfapi.getEnvironmentList();
-            if (!environments.contains(environment))
-                sfapi.createEnvironment(environment);
             Map<String, Service> services = sfapi.getServices(environment);
             if (services.get(serviceName) == null) {
                 byte[] content = getByteContent(serviceFile);
@@ -216,9 +207,6 @@ public class TestServicePositive extends AbstractSFTest {
     public void testDeleteServiceWithArgs() throws Exception {
         logger.info("Start testDeleteServiceWithArgs()");
         try {
-            List<String> environments = sfapi.getEnvironmentList();
-            if (!environments.contains(environment))
-                sfapi.createEnvironment(environment);
             Map<String, Service> services = sfapi.getServices(environment);
             if (services.get(serviceName) == null) {
                 byte[] content = getByteContent(serviceFile);
@@ -246,9 +234,6 @@ public class TestServicePositive extends AbstractSFTest {
     public void testDeleteAllServices() throws Exception {
         logger.info("Start testDeleteAllServices()");
         try {
-            List<String> environments = sfapi.getEnvironmentList();
-            if (!environments.contains(environment))
-                sfapi.createEnvironment(environment);
             Map<String, Service> services = sfapi.getServices(environment);
             if (services.get(serviceName) == null) {
                 byte[] content = getByteContent(serviceFile);
@@ -314,10 +299,6 @@ public class TestServicePositive extends AbstractSFTest {
     public void testDoubleStartService() throws Exception {
         logger.info("Start testDoubleStartService()");
         try {
-            List<String> environments = sfapi.getEnvironmentList();
-            if (!environments.contains(environment)) {
-                sfapi.createEnvironment(environment);
-            }
             startServer(sfapi, environment);
             Map<String, Service> services = sfapi.getServices(environment);
             boolean imported = false;

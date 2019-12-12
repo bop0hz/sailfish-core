@@ -37,6 +37,7 @@ public class TestConnectionManagerSynchronization extends AbstractSFTest {
     private static final String PATH = "connectionManagerServices" + File.separator;
     private static List<ServiceImportResult> importedServices = new ArrayList<ServiceImportResult>();
     private static final Logger logger = LoggerFactory.getLogger(TestConnectionManagerSynchronization.class);
+    private static String environment = "TestConnectionManagerSynchronization";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -48,7 +49,7 @@ public class TestConnectionManagerSynchronization extends AbstractSFTest {
                 serviceFile = PATH + "fake" + i + ".xml";
                 byte[] content = getByteContent(serviceFile);
                 InputStream inputStream = new ByteArrayInputStream(content);
-                importedServices.addAll(sfapi.importServices(serviceFile, "default", inputStream, false, false));
+                importedServices.addAll(sfapi.importServices(serviceFile, environment, inputStream, false, false));
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -61,7 +62,7 @@ public class TestConnectionManagerSynchronization extends AbstractSFTest {
         logger.info("Finish tests of connection");
         try {
             for (ServiceImportResult serviceImport : importedServices) {
-                sfapi.deleteService("default", serviceImport.getServiceName());
+                sfapi.deleteService(environment, serviceImport.getServiceName());
             }
             sfapi.close();
         } catch (Exception e) {
@@ -89,7 +90,7 @@ public class TestConnectionManagerSynchronization extends AbstractSFTest {
 
             // ----Start----//
             for (ServiceImportResult serviceImport : importedServices) {
-                sfapi.startService("default", serviceImport.getServiceName());
+                sfapi.startService(environment, serviceImport.getServiceName());
             }
             try {
                 int timewait = 0;
@@ -104,7 +105,7 @@ public class TestConnectionManagerSynchronization extends AbstractSFTest {
 
             // ----Stop----//
             for (ServiceImportResult serviceImport : importedServices) {
-                sfapi.stopService("default", serviceImport.getServiceName());
+                sfapi.stopService(environment, serviceImport.getServiceName());
             }
             try {
                 int timewait = 0;
@@ -124,7 +125,7 @@ public class TestConnectionManagerSynchronization extends AbstractSFTest {
 
     private boolean isInitialized() throws APIResponseException, APICallException {
         for (ServiceImportResult serviceImport : importedServices) {
-            if (!Service.Status.INITIALIZED.equals(sfapi.getServices("default").get(serviceImport.getServiceName()).getStatus()))
+            if (!Service.Status.INITIALIZED.equals(sfapi.getServices(environment).get(serviceImport.getServiceName()).getStatus()))
                 return false;
         }
         return true;
@@ -132,7 +133,7 @@ public class TestConnectionManagerSynchronization extends AbstractSFTest {
 
     private boolean isStarted() throws APIResponseException, APICallException {
         for (ServiceImportResult serviceImport : importedServices) {
-            if (!Service.Status.STARTED.equals(sfapi.getServices("default").get(serviceImport.getServiceName()).getStatus()))
+            if (!Service.Status.STARTED.equals(sfapi.getServices(environment).get(serviceImport.getServiceName()).getStatus()))
                 return false;
         }
         return true;
@@ -140,7 +141,7 @@ public class TestConnectionManagerSynchronization extends AbstractSFTest {
 
     private boolean isDisposed() throws APIResponseException, APICallException {
         for (ServiceImportResult serviceImport : importedServices) {
-            if (!Service.Status.DISPOSED.equals(sfapi.getServices("default").get(serviceImport.getServiceName()).getStatus()))
+            if (!Service.Status.DISPOSED.equals(sfapi.getServices(environment).get(serviceImport.getServiceName()).getStatus()))
                 return false;
         }
         return true;

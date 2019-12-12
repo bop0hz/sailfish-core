@@ -32,7 +32,7 @@ public class TestEnvironmentNegative extends AbstractSFTest {
 
     private SFAPIClient sfapi;
 
-    private String firstEnvironment = "firstEnvironment";
+    private String firstEnvironment = "firstEnvironmentNegative";
     private static final Logger logger = LoggerFactory.getLogger(TestEnvironmentNegative.class);
 
     @BeforeClass
@@ -95,7 +95,7 @@ public class TestEnvironmentNegative extends AbstractSFTest {
             }
             Assert.assertTrue("Environment " + firstEnvironment + " wasn't created", sfapi.getEnvironmentList().contains(firstEnvironment));
             try {
-                sfapi.createEnvironment("firstEnvironment");
+                sfapi.createEnvironment(firstEnvironment);
                 Assert.fail("Can't create existing environment " + firstEnvironment + ", but creating was successful");
             } catch (APIResponseException e) {
             }

@@ -65,4 +65,10 @@
         <validateFieldsOutOfOrder>true</validateFieldsOutOfOrder>
         <validateUserDefinedFields>false</validateUserDefinedFields>
     </fixClientSettings>
+    <variables>
+        <entry>
+            <key>socketConnectPort</key>
+            <value>fixServerPort</value>
+        </entry>
+    </variables>
 </serviceDescription>
