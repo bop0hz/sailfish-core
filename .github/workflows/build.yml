@@ -33,4 +33,4 @@ jobs:
         name: Build
         url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
         status: ${{ job.status }}
-      if: failed()
+      if: failure()
