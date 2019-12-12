@@ -24,7 +24,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: ${{ matrix.platform }}-logs
-        path: ./BackEnd/Core/sailfish-core/build/test-results/
+        path: '**/test-results/*'
       if: failure()
 
     - name: Google Chat Notification
