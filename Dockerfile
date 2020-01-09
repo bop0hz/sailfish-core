@@ -9,4 +9,4 @@ RUN gradle clean build zipRelease --no-daemon && \
 
 FROM tomcat:9.0.26-jdk8-openjdk-slim
 WORKDIR /usr/local/tomcat/webapps
-COPY --from=builder /home/gradle/src/sfgui .
+COPY --from=builder --chown=1000 /home/gradle/src/sfgui ./sfgui
