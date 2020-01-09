@@ -7,11 +7,12 @@ RUN gradle clean build publishPlugin zipRelease --no-daemon && \
 
 FROM tomcat:9.0.26-jdk8-openjdk-slim
 WORKDIR /usr/local/tomcat/webapps
-COPY --from=builder /home/gradle/src/FrontEnd/SailfishFrontEnd/build/release/sfgui.war .
+COPY --from=builder /home/gradle/src/sfgui.war .
 RUN jar xvf sfgui.war . && \
     rm sfgui.war && \
     sed -i 's/\<StorageType\>db/\<StorageType\>file/g' ./sfgui/cfg/sf.cfg.xml
 
 WORKDIR /usr/local/tomcat/webapps/sfgui/plugins/
-COPY --from=builder /home/gradle/src/BackEnd/Plugin/plugin-generic/build/release/generic/plugins/ .
-RUN sed -i 's/\<StorageType\>db/\<StorageType\>file/g' ./sfgui/cfg/sf.cfg.xml
+COPY --from=builder /home/gradle/src/plugins/ .
+WORKDIR /usr/local/tomcat/webapps/sfgui/
+RUN sed -i 's/<StorageType>db/<StorageType>file/' ./cfg/sf.cfg.xml
