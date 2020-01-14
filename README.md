@@ -4,6 +4,8 @@ Sailfish-core
 This is the official Sailfish-core project repository.
 
 ## intro
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fbop0hz%2Fsailfish-core.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fbop0hz%2Fsailfish-core?ref=badge_shield)
+
 
 Sailfish is a test automation tool whose primary purpose is testing of bi-directional message flows in distributed trading platforms and market data delivery systems. It is a purely back-end tool (meaning that it does not have any front-end GUI testing capabilities) that is typically connected to message gateways / APIs utilized by trading or market data traffic.
 
@@ -36,3 +38,7 @@ Note: The 'quickStart' property enables the ability to run Sailfish without conn
 And then, open http://localhost:8080/sfgui
 
 The updated version of Exactpro Sailfish Manual 9.0 is available here: [exactpro.com/sailfish/sailfish_manual.pdf](https://exactpro.com/sailfish/sailfish_manual.pdf)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fbop0hz%2Fsailfish-core.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fbop0hz%2Fsailfish-core?ref=badge_large)
